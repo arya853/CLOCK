@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun Digital Clock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      color: #00fff0;
+      transition: background 0.5s ease-in-out;
+    }
+    .clock {
+      font-size: 70px;
+      text-shadow: 0 0 10px #00fff0;
+      animation: blink 1s infinite;
+    }
+    .day {
+      font-family: 'VT323', monospace;
+      font-size: 30px;
+      margin-top: 10px;
+      color: #ffffffcc;
+    }
+    .date {
+      font-family: 'VT323', monospace;
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: #cccccc;
+    }
+    .quote {
+      font-size: 20px;
+      color: #ffd700;
+      margin: 10px;
+      font-style: italic;
+    }
+    .emoji-container {
+      font-size: 50px;
+    }
+    .toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #222;
+      color: #00fff0;
+      border: 1px solid #00fff0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .light-mode {
+      background: linear-gradient(to bottom, #f2fcfe, #1c92d2);
+      color: #000;
+    }
+    .light-mode .quote { color: #222; }
+    .light-mode .toggle-btn { background: #fff; color: #000; border-color: #000; }
+    .light-mode .clock { color: #111; text-shadow: 0 0 0; }
+
+    @keyframes blink {
+      50% { opacity: 0.6; }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-btn" onclick="toggleTheme()">LIGHT / DARK</button>
+  <div class="day" id="day"></div>
+  <div class="date" id="date"></div>
+  <div class="clock" id="clock"></div>
+  <div class="quote" id="quote">"Make every second count."</div>
+  <div class="emoji-container">🐻‍❄️ 🐱 <!-- teddy bear and cat emoji -->
+  </div>
+  <audio id="tickSound" src="https://www.soundjay.com/clock/sounds/clock-ticking-1.mp3" preload="auto"></audio>
+
+  <script>
+    const clockEl = document.getElementById("clock");
+    const dayEl = document.getElementById("day");
+    const dateEl = document.getElementById("date");
+    const quoteEl = document.getElementById("quote");
+    const tickSound = document.getElementById("tickSound");
+
+    const quotes = [
+      "Time waits for no one!",
+      "Make every second count.",
+      "Another second, another chance!",
+      "You are the master of your time!",
+      "Use your time wisely!"
+    ];
+
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+      const ampm = h >= 12 ? "PM" : "AM";
+      const hour = h % 12 || 12;
+      const time = `${hour.toString().padStart(2, '0')}:` +
+                   `${m.toString().padStart(2, '0')}:` +
+                   `${s.toString().padStart(2, '0')} ${ampm}`;
+      clockEl.textContent = time;
+
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      dayEl.textContent = days[now.getDay()];
+      dateEl.textContent = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+      if (s === 0) {
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        quoteEl.textContent = `"${randomQuote}"`;
+      }
+
+      // Play tick sound
+      tickSound.currentTime = 0;
+      tickSound.play();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
